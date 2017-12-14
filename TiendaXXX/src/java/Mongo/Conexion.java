@@ -36,53 +36,41 @@ public class Conexion {
 
     public void GuardarPelicula(Pelicula p) {
 
-        try {
-            DB db;
-            Mongo mongo = new Mongo(url, puerto);
-            db = mongo.getDB(database);
-            DBCollection collection = db.getCollection("peliculas");
-            BasicDBObject pelicula = new BasicDBObject();
-            pelicula.put("titulo", p.getTitulo() );
-            pelicula.put("anio", p.getAnio());
-            pelicula.put("critica", p.getCritica());
-            pelicula.put("caratula", p.getCaratula());
-            
-            
-            List<BasicDBObject> lcopias=new ArrayList<>();
+        DB db;
+        Mongo mongo = new Mongo("localhost", 27017);
+        db = mongo.getDB(database);
+        DBCollection collection = db.getCollection("peliculas");
+        BasicDBObject pelicula = new BasicDBObject();
+        pelicula.put("titulo", p.getTitulo());
+        pelicula.put("anio", p.getAnio());
+        pelicula.put("critica", p.getCritica());
+        pelicula.put("caratula", p.getCaratula());
+        List<BasicDBObject> lcopias = new ArrayList<>();
+        if (p.getCopias() != null) {
             for (Copia c : p.getCopias()) {
                 BasicDBObject copia = new BasicDBObject();
                 copia.put("deteriorada", c.isDeteriorada());
                 copia.put("formato", c.getFormato());
                 copia.put("precio_alquiler", c.getPrecioAlquiler());
-                
+
             }
-            pelicula.put("copias", lcopias);
-            collection.insert(pelicula);
-            
-                    
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
+        pelicula.put("copias", lcopias);
+        collection.insert(pelicula);
 
     }
 
     public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException {
         try {
-            Pelicula p = new Pelicula();
-            p.setTitulo("denis");
-            String nombreAtributo = Pelicula.class.getDeclaredFields()[0].getName();
-            System.out.println(Pelicula.class.getDeclaredFields()[0].getType());
-            System.out.println(Pelicula.class.getDeclaredFields()[0].getName());
-            System.out.println(Pelicula.class.getMethod("get" + ((char) (nombreAtributo.toCharArray()[0] - 32)) + nombreAtributo.substring(1), null).invoke(p, null));
-
-            /*Mongo mongo = new Mongo("localhost", 27017);
+            DB db;
+            Mongo mongo = new Mongo("localhost", 27017);
             db = mongo.getDB("mongo_excercise");
             DBCollection coleccion = db.getCollection("movie");
             DBCursor cursor = coleccion.find();
             while (cursor.hasNext()) {
                 DBObject obj = cursor.next();
                 System.out.println(obj.get("title"));
-            }*/
+            }
         } catch (Exception ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }

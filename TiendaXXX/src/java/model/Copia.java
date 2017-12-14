@@ -37,4 +37,9 @@ public class Copia {
     public void setPrecioAlquiler(float precioAlquiler) {
         this.precioAlquiler = precioAlquiler;
     }
+
+    @Override
+    public String toString() {
+        return "Copia{" + "deteriorada=" + deteriorada + ", formato=" + formato + ", precioAlquiler=" + precioAlquiler + '}';
+    }
 }
